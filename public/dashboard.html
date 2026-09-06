@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Panel – Aurora Nails Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="dashboard-page">
+
+  <!-- Login screen -->
+  <div class="container login-screen" id="loginScreen">
+    <div class="hero-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2c1.8 2.6 5 5.7 5 9.2A5 5 0 0 1 7 11.2C7 7.7 10.2 4.6 12 2z" fill="currentColor"/>
+        <circle cx="18.5" cy="5.5" r="1.4" fill="currentColor"/>
+        <circle cx="5" cy="16" r="1" fill="currentColor"/>
+      </svg>
+    </div>
+    <h1>Admin Panel</h1>
+    <p>Rezervasiyaları idarə etmək üçün admin kodunu daxil edin.</p>
+    <div id="loginError" class="login-error"></div>
+    <div class="input-wrapper">
+      <input type="password" id="adminCodeInput" class="form-input" placeholder="Admin kodu" autocomplete="off" aria-label="Admin kodu">
+      <button id="adminToggle" class="toggle-password" type="button" aria-label="Şifrəni göstər" aria-pressed="false">
+        <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </button>
+    </div>
+    <button id="loginBtn" class="btn btn-primary login-submit">Daxil ol</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="container dashboard-shell" id="dashboardScreen" hidden>
+    <div class="dashboard-topbar">
+      <div class="dashboard-brand">
+        <div class="hero-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2c1.8 2.6 5 5.7 5 9.2A5 5 0 0 1 7 11.2C7 7.7 10.2 4.6 12 2z" fill="currentColor"/>
+            <circle cx="18.5" cy="5.5" r="1.4" fill="currentColor"/>
+            <circle cx="5" cy="16" r="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <h1>Admin Panel</h1>
+      </div>
+      <button id="logoutBtn" class="logout-btn">Çıxış</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-value" id="statBooked">0</span>
+        <span class="stat-label">Rezerv olunub</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="statFree">0</span>
+        <span class="stat-label">Boş saat</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="statTotal">0</span>
+        <span class="stat-label">Cəmi saat</span>
+      </div>
+    </div>
+
+    <label for="date">Gün seçin:</label>
+    <input type="date" id="date">
+
+    <div id="slots" class="admin-slots-list"></div>
+
+    <div class="dashboard-controls">
+      <button id="dayOffBtn" class="admin-action-btn">Bugün işləmirik</button>
+      <button id="cleanupBtn" class="admin-action-btn secondary">Köhnə qeydləri təmizlə</button>
+    </div>
+  </div>
+
+  <!-- Name/Phone Modal (used for admin add/edit) -->
+  <div id="nameModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="modalTitle">Rezervasiya</h2>
+      <input type="text" id="modalNameInput" placeholder="Müştərinin adı..." autocomplete="off">
+      <input type="tel" id="modalPhoneInput" placeholder="Telefon nömrəsi..." autocomplete="off" style="margin-top:8px">
+      <div class="modal-actions">
+        <button id="modalConfirm" class="primary">Təsdiqlə</button>
+        <button id="modalCancel" class="ghost">Ləğv et</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="confirmTitle">Təsdiq</h2>
+      <p id="confirmMessage"></p>
+      <div class="modal-actions">
+        <button id="confirmCancel" class="ghost">Geri</button>
+        <button id="confirmOk" class="primary">Təsdiq</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to top -->
+  <button id="backToTop" class="back-to-top" aria-label="Yuxarı qayıt">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5m0 0l-6 6m6-6l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <script>
+    const HOURS = [
+      "10:00", "11:00", "12:00",
+      "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"
+    ];
+
+    const API_BASE = window.location.origin;
+    const API_URL = `${API_BASE}/api/reservations`;
+    const TOKEN_KEY = 'an_admin_token';
+
+    let adminToken = sessionStorage.getItem(TOKEN_KEY) || '';
+    let selectedHour = null;
+    let selectedDate = null;
+    let isEditing = false;
+    let pollingInterval = null;
+
+    const loginScreen = document.getElementById('loginScreen');
+    const dashboardScreen = document.getElementById('dashboardScreen');
+    const loginError = document.getElementById('loginError');
+    const adminCodeInput = document.getElementById('adminCodeInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const adminToggle = document.getElementById('adminToggle');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const dateInput = document.getElementById('date');
+    const slotContainer = document.getElementById('slots');
+    const dayOffBtn = document.getElementById('dayOffBtn');
+    const cleanupBtn = document.getElementById('cleanupBtn');
+
+    function showLogin(message) {
+      adminToken = '';
+      sessionStorage.removeItem(TOKEN_KEY);
+      loginScreen.hidden = false;
+      dashboardScreen.hidden = true;
+      stopPolling();
+      if (message) {
+        loginError.textContent = message;
+        loginError.classList.add('show');
+      }
+    }
+
+    function showDashboard() {
+      loginScreen.hidden = true;
+      dashboardScreen.hidden = false;
+      loginError.classList.remove('show');
+      if (!dateInput.value) {
+        const today = new Date();
+        dateInput.value = formatDate(today);
+      }
+      loadSlots();
+      startPolling();
+    }
+
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    async function verifyToken(token) {
+      const resp = await fetch(`${API_BASE}/api/admin/verify`, {
+        method: 'POST',
+        headers: { 'x-admin-token': token }
+      });
+      return resp.ok;
+    }
+
+    async function attemptLogin() {
+      const token = adminCodeInput.value.trim();
+      if (!token) {
+        loginError.textContent = 'Kod daxil edin';
+        loginError.classList.add('show');
+        return;
+      }
+      loginBtn.disabled = true;
+      try {
+        const ok = await verifyToken(token);
+        if (ok) {
+          adminToken = token;
+          sessionStorage.setItem(TOKEN_KEY, token);
+          adminCodeInput.value = '';
+          showDashboard();
+        } else {
+          loginError.textContent = 'Yanlış admin kodu';
+          loginError.classList.add('show');
+        }
+      } catch (e) {
+        loginError.textContent = 'Serverə qoşulmaq mümkün olmadı';
+        loginError.classList.add('show');
+      } finally {
+        loginBtn.disabled = false;
+      }
+    }
+
+    loginBtn.addEventListener('click', attemptLogin);
+    adminCodeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') attemptLogin();
+    });
+    adminToggle.addEventListener('click', () => {
+      const showing = adminCodeInput.type === 'text';
+      adminCodeInput.type = showing ? 'password' : 'text';
+      adminToggle.setAttribute('aria-pressed', String(!showing));
+    });
+    logoutBtn.addEventListener('click', () => showLogin());
+
+    async function fetchBookings(date) {
+      const resp = await fetch(`${API_URL}?date=${encodeURIComponent(date)}`, {
+        headers: { 'x-admin-token': adminToken }
+      });
+      if (resp.status === 401) {
+        showLogin('Sessiya bitib, yenidən daxil olun');
+        return {};
+      }
+      return resp.json();
+    }
+
+    function updateStats(dayBookings) {
+      const bookedCount = HOURS.filter(h => !!dayBookings[h]).length;
+      document.getElementById('statBooked').textContent = bookedCount;
+      document.getElementById('statFree').textContent = HOURS.length - bookedCount;
+      document.getElementById('statTotal').textContent = HOURS.length;
+    }
+
+    async function loadSlots() {
+      const date = dateInput.value;
+      if (!date) return;
+
+      slotContainer.innerHTML = '';
+      const data = await fetchBookings(date);
+      const bookings = data.bookings || data || {};
+      const dayBookings = bookings[date] || {};
+
+      updateStats(dayBookings);
+
+      HOURS.forEach(hour => {
+        const div = document.createElement('div');
+        const isBooked = !!dayBookings[hour];
+        div.className = 'admin-slot ' + (isBooked ? 'is-booked' : 'is-free');
+
+        const displayName = isBooked ? dayBookings[hour] : 'Boş';
+        div.innerHTML = `<div class="admin-slot-info"><span class="admin-slot-hour">${hour}</span><span class="admin-slot-name">${displayName}</span></div>`;
+
+        const actions = document.createElement('div');
+        actions.className = 'admin-slot-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = isBooked ? 'Düzəliş' : 'Əlavə et';
+        editBtn.className = 'admin-slot-btn edit';
+        editBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          isEditing = isBooked;
+          openNameModal(hour, date, isBooked ? dayBookings[hour] : null);
+        });
+        actions.appendChild(editBtn);
+
+        if (isBooked) {
+          const cancelBtn = document.createElement('button');
+          cancelBtn.textContent = 'Sil';
+          cancelBtn.className = 'admin-slot-btn cancel';
+          cancelBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const confirmed = await showConfirm(`${hour} üçün rezervasiyanı ləğv etmək istəyirsiniz?`);
+            if (!confirmed) return;
+            const params = new URLSearchParams({ date, hour });
+            const resp = await fetch(`${API_URL}?${params.toString()}`, {
+              method: 'DELETE',
+              headers: { 'x-admin-token': adminToken }
+            });
+            if (resp.ok) {
+              await loadSlots();
+            } else {
+              const err = await resp.json().catch(() => ({}));
+              alert(err.message || 'Xəta baş verdi');
+            }
+          });
+          actions.appendChild(cancelBtn);
+        }
+
+        div.appendChild(actions);
+        slotContainer.appendChild(div);
+      });
+    }
+
+    function openNameModal(hour, date, existingLabel) {
+      selectedHour = hour;
+      selectedDate = date;
+      document.getElementById('modalTitle').textContent = isEditing ? 'Rezervasiyanı redaktə edin' : 'Yeni rezervasiya əlavə edin';
+      const nameInput = document.getElementById('modalNameInput');
+      const phoneInput = document.getElementById('modalPhoneInput');
+      if (isEditing && existingLabel) {
+        const match = existingLabel.match(/^(.*) \((.*)\)$/);
+        nameInput.value = match ? match[1] : existingLabel;
+        phoneInput.value = match ? match[2] : '';
+      } else {
+        nameInput.value = '';
+        phoneInput.value = '';
+      }
+      const modal = document.getElementById('nameModal');
+      modal.style.display = 'flex';
+      void modal.offsetWidth;
+      modal.classList.add('show');
+      setTimeout(() => nameInput.focus(), 100);
+    }
+
+    function closeNameModal() {
+      const modal = document.getElementById('nameModal');
+      modal.classList.remove('show');
+      setTimeout(() => { modal.style.display = 'none'; }, 220);
+      selectedHour = null;
+      selectedDate = null;
+      isEditing = false;
+    }
+
+    document.getElementById('modalCancel').onclick = closeNameModal;
+
+    document.getElementById('modalConfirm').onclick = async function() {
+      const name = document.getElementById('modalNameInput').value.trim();
+      const phone = document.getElementById('modalPhoneInput').value.trim();
+      if (!name || !phone) {
+        alert('Ad və telefon nömrəsini daxil edin');
+        return;
+      }
+
+      let result;
+      if (isEditing) {
+        result = await fetch(API_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
+          body: JSON.stringify({ date: selectedDate, hour: selectedHour, newName: name, newPhone: phone })
+        }).then(r => r.json());
+      } else {
+        result = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
+          body: JSON.stringify({ date: selectedDate, hour: selectedHour, name, phone })
+        }).then(r => r.json());
+      }
+
+      if (result.status === 'success') {
+        closeNameModal();
+        await loadSlots();
+      } else {
+        alert(result.message || 'Xəta baş verdi');
+      }
+    };
+
+    async function showConfirm(message) {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('confirmModal');
+        const messageEl = document.getElementById('confirmMessage');
+        const confirmBtn = document.getElementById('confirmOk');
+        const cancelBtn = document.getElementById('confirmCancel');
+
+        messageEl.textContent = message;
+        modal.style.display = 'flex';
+        void modal.offsetWidth;
+        modal.classList.add('show');
+
+        const cleanup = () => {
+          modal.classList.remove('show');
+          setTimeout(() => { modal.style.display = 'none'; }, 300);
+          confirmBtn.removeEventListener('click', onConfirm);
+          cancelBtn.removeEventListener('click', onCancel);
+        };
+        const onConfirm = () => { cleanup(); resolve(true); };
+        const onCancel = () => { cleanup(); resolve(false); };
+
+        confirmBtn.addEventListener('click', onConfirm);
+        cancelBtn.addEventListener('click', onCancel);
+      });
+    }
+
+    dayOffBtn.addEventListener('click', async () => {
+      const date = dateInput.value;
+      if (!date) return;
+      const confirmed = await showConfirm(`${date} tarixi üçün bütün saatlar "Bugün işləmirik" kimi işarələnəcək. Əminsiniz?`);
+      if (!confirmed) return;
+
+      const resp = await fetch(`${API_BASE}/api/reservations/day-off`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
+        body: JSON.stringify({ date })
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || data.status !== 'success') {
+        alert(data.message || 'Günü bağlamaq mümkün olmadı');
+        return;
+      }
+      await loadSlots();
+    });
+
+    cleanupBtn.addEventListener('click', async () => {
+      const confirmed = await showConfirm('7 gündən köhnə bütün rezervasiyalar silinəcək. Davam edilsin?');
+      if (!confirmed) return;
+
+      const resp = await fetch(`${API_BASE}/api/reservations/cleanup`, {
+        method: 'DELETE',
+        headers: { 'x-admin-token': adminToken }
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        alert(data.message || 'Təmizləmə uğursuz oldu');
+        return;
+      }
+      alert(`${data.deleted || 0} köhnə qeyd silindi`);
+      await loadSlots();
+    });
+
+    dateInput.addEventListener('change', () => loadSlots());
+
+    function startPolling() {
+      stopPolling();
+      pollingInterval = setInterval(() => {
+        if (!document.hidden) loadSlots();
+      }, 15000);
+    }
+
+    function stopPolling() {
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+      }
+    }
+
+    const backToTopBtn = document.getElementById('backToTop');
+    if (backToTopBtn) {
+      const toggleBackToTop = () => {
+        backToTopBtn.classList.toggle('show', window.scrollY > 480);
+      };
+      window.addEventListener('scroll', toggleBackToTop, { passive: true });
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    (async function init() {
+      const today = new Date();
+      dateInput.value = formatDate(today);
+
+      if (adminToken) {
+        const ok = await verifyToken(adminToken);
+        if (ok) {
+          showDashboard();
+          return;
+        }
+      }
+      showLogin();
+    })();
+  </script>
+</body>
+</html>

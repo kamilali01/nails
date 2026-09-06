@@ -1,0 +1,8 @@
+{
+    "name": "masterbarber",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "vercel-build": "cd server && npm install"
+    }
+  }

@@ -1,0 +1,12 @@
+# Node modules (backend)
+server/node_modules/
+
+# Environment file
+server/.env
+server/src/.env
+
+# Logs
+*.log
+
+# System files
+.DS_Store

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+      content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live/ https://vercel.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' data: https: blob: https://vercel.live/ https://vercel.com *.pusher.com/;
+      font-src 'self' data: https://fonts.gstatic.com;
+      connect-src 'self' https://vercel.live/ https://vercel.com;
+      frame-src https://vercel.live/ https://vercel.com;
+      ">
+  <meta name="description" content="Aurora Nails Studio – manikür, pedikür və nail art üçün onlayn rezervasiya.">
+  <title>Aurora Nails Studio – Onlayn Rezervasiya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <a class="nav-brand" href="#top">
+      <span class="hero-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 2c1.8 2.6 5 5.7 5 9.2A5 5 0 0 1 7 11.2C7 7.7 10.2 4.6 12 2z" fill="currentColor"/>
+          <circle cx="18.5" cy="5.5" r="1.4" fill="currentColor"/>
+          <circle cx="5" cy="16" r="1" fill="currentColor"/>
+        </svg>
+      </span>
+      <span>Aurora Nails</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menyunu aç" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="#services" class="nav-link">Xidmətlər</a>
+      <a href="#gallery" class="nav-link">Qalereya</a>
+      <a href="#booking" class="nav-link">Rezervasiya</a>
+      <a href="#contact" class="nav-link">Əlaqə</a>
+      <a href="#booking" class="nav-cta-mobile">Rezervasiya et</a>
+    </div>
+    <a href="#booking" class="nav-cta">Rezervasiya et</a>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero" id="top">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow reveal">Premium Manikür &amp; Pedikür Studiyası</p>
+      <h1 class="reveal">Əlləriniz üçün <span class="accent-text">sənət səviyyəsində</span> qayğı</h1>
+      <p class="hero-sub reveal">Rəngarəng dizaynlar, peşəkar qulluq və rahat atmosfer — sevdiyiniz saatı seçin, gerisini bizə buraxın.</p>
+      <div class="hero-cta-row reveal">
+        <a href="#booking" class="btn btn-primary">Rezervasiya et</a>
+        <a href="#services" class="btn btn-outline">Xidmətlərə bax</a>
+      </div>
+    </div>
+    <a class="hero-scroll" href="#services" aria-label="Aşağı sürüşdürün">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 4v16m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </header>
+
+  <!-- Services -->
+  <section class="section" id="services">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Xidmətlər</p>
+      <h2>Sizin üçün seçdiklərimiz</h2>
+      <p class="section-sub">Hər əlin öz hekayəsi var — sizinkini birlikdə yaradaq.</p>
+    </div>
+
+    <div class="service-grid">
+      <article class="service-card reveal">
+        <div class="service-media"><img src="/images/service-classic.webp" alt="Klassik manikür" loading="lazy"></div>
+        <div class="service-body">
+          <h3>Klassik manikür</h3>
+          <p>Səliqəli forma və incə qulluq — hər gün üçün zərif görünüş.</p>
+          <span class="service-price">15 AZN</span>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-media"><img src="/images/service-gel.webp" alt="Gel (şellak) manikür" loading="lazy"></div>
+        <div class="service-body">
+          <h3>Gel (şellak) manikür</h3>
+          <p>Uzun müddət parlaq qalan, zədəyə davamlı örtük.</p>
+          <span class="service-price">25 AZN</span>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-media"><img src="/images/service-pedicure.webp" alt="Pedikür" loading="lazy"></div>
+        <div class="service-body">
+          <h3>Pedikür</h3>
+          <p>Ayaqlarınıza tam rahatlıq və təravət bəxş edən qulluq.</p>
+          <span class="service-price">20 AZN</span>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-media"><img src="/images/service-extension.webp" alt="Dırnaq uzatma" loading="lazy"></div>
+        <div class="service-body">
+          <h3>Dırnaq uzatma</h3>
+          <p>İstədiyiniz uzunluq və forma — akril və ya gel ilə.</p>
+          <span class="service-price">35 AZN</span>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-media"><img src="/images/service-nailart.webp" alt="Nail art" loading="lazy"></div>
+        <div class="service-body">
+          <h3>Nail art (dizayn)</h3>
+          <p>Hər dırnaq bir sənət əsəri — istədiyiniz üslubu seçin.</p>
+          <span class="service-price">2 AZN <small>/ dırnaq</small></span>
+        </div>
+      </article>
+
+      <article class="service-card service-card-addon reveal">
+        <div class="service-body service-body-center">
+          <h3>Əlavə xidmət</h3>
+          <p>Örtüyün silinməsi</p>
+          <span class="service-price">10 AZN</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Creative banner -->
+  <section class="creative-banner reveal">
+    <div class="creative-banner-bg" style="background-image:url('/images/banner-creative.webp')" aria-hidden="true"></div>
+    <div class="creative-banner-scrim" aria-hidden="true"></div>
+    <div class="creative-banner-content">
+      <p class="section-eyebrow light">Yaradıcılığınıza sərhəd yoxdur</p>
+      <h2>Öz üslubunuzu yaradın</h2>
+      <a href="#gallery" class="btn btn-outline light">Qalereyaya bax</a>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="section" id="gallery">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Qalereya</p>
+      <h2>İşlərimizdən nümunələr</h2>
+      <p class="section-sub">Ustalarımızın son işlərindən bir neçə görüntü.</p>
+    </div>
+    <div class="gallery-grid">
+      <button class="gallery-item reveal" data-full="/images/gallery-1.webp" aria-label="Böyüt">
+        <img src="/images/gallery-1.webp" alt="Bənövşəyi ombre dizayn" loading="lazy">
+      </button>
+      <button class="gallery-item reveal" data-full="/images/gallery-2.webp" aria-label="Böyüt">
+        <img src="/images/gallery-2.webp" alt="Qara və tısbağa naxışlı dizayn" loading="lazy">
+      </button>
+      <button class="gallery-item reveal" data-full="/images/gallery-3.webp" aria-label="Böyüt">
+        <img src="/images/gallery-3.webp" alt="Ağ rəngli ürək dizaynı" loading="lazy">
+      </button>
+      <button class="gallery-item reveal" data-full="/images/gallery-4.webp" aria-label="Böyüt">
+        <img src="/images/gallery-4.webp" alt="Qırmızı yazılı dizayn" loading="lazy">
+      </button>
+    </div>
+  </section>
+
+  <!-- Booking -->
+  <section class="section section-booking" id="booking">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Rezervasiya</p>
+      <h2>Sizə uyğun saatı seçin</h2>
+      <p class="section-sub">Gün seçin, boş saatlardan birinə klikləyin və məlumatlarınızı daxil edin.</p>
+    </div>
+
+    <div class="container booking-card reveal">
+      <label for="date">Gün seçin:</label>
+      <input type="date" id="date">
+
+      <div class="slots-legend">
+        <span><i class="dot dot-free"></i> Boş</span>
+        <span><i class="dot dot-mine"></i> Sizin rezervasiyanız</span>
+        <span><i class="dot dot-booked"></i> Rezerv olunub</span>
+      </div>
+
+      <div id="slots" class="slots-grid">
+        <!-- Saatlar buraya JS ilə gələcək -->
+      </div>
+
+      <p id="message"></p>
+    </div>
+  </section>
+
+  <!-- Name Modal -->
+  <div id="nameModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="modalTitle">Adınızı və nömrənizi daxil edin</h2>
+      <input type="text" id="modalNameInput" placeholder="Adınız..." autocomplete="off">
+      <input type="tel" id="modalPhoneInput" placeholder="Telefon nömrəniz..." autocomplete="off" style="margin-top:8px">
+      <div class="modal-actions">
+        <button id="modalConfirm" class="primary">Təsdiqlə</button>
+        <button id="modalCancel" class="ghost">Ləğv et</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage (edit/cancel) Modal for the visitor's own booking -->
+  <div id="manageModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Saat <span id="manageHour"></span></h2>
+      <p class="modal-subtitle">Bu rezervasiya sizə aiddir. Nə etmək istəyirsiniz?</p>
+      <div class="modal-actions">
+        <button id="manageEditBtn" class="primary">Redaktə et</button>
+        <button id="manageCancelBtn" class="ghost">Ləğv et</button>
+      </div>
+      <button id="manageClose" class="btn-text-close">Bağla</button>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="confirmTitle">Təsdiq</h2>
+      <p id="confirmMessage"></p>
+      <div class="modal-actions">
+        <button id="confirmCancel" class="ghost">Geri</button>
+        <button id="confirmOk" class="primary">Təsdiq</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to top -->
+  <button id="backToTop" class="back-to-top" aria-label="Yuxarı qayıt">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5m0 0l-6 6m6-6l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <!-- Lightbox Modal -->
+  <div id="lightboxModal" class="modal lightbox-modal" style="display:none;">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Bağla">&times;</button>
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer" id="contact">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-brand" href="#top">
+          <span class="hero-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2c1.8 2.6 5 5.7 5 9.2A5 5 0 0 1 7 11.2C7 7.7 10.2 4.6 12 2z" fill="currentColor"/>
+              <circle cx="18.5" cy="5.5" r="1.4" fill="currentColor"/>
+              <circle cx="5" cy="16" r="1" fill="currentColor"/>
+            </svg>
+          </span>
+          <span>Aurora Nails</span>
+        </a>
+        <p>Premium manikür, pedikür və nail art studiyası.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Əlaqə</h4>
+        <!-- TODO: real ünvan/nömrə əlavə edin -->
+        <p>Ünvan əlavə edilməyib</p>
+        <p>Telefon əlavə edilməyib</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>İş saatları</h4>
+        <p>Hər gün: 10:00 – 22:00</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Sosial media</h4>
+        <div class="hero-actions">
+          <!-- TODO: real hesabları əlavə edin -->
+          <a class="hero-action icon-only" href="#" aria-label="Instagram">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="4" width="16" height="16" rx="5" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="16.8" cy="7.2" r="1.1" fill="currentColor"/>
+            </svg>
+          </a>
+          <a class="hero-action icon-only" href="#" aria-label="TikTok">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <path d="M14.5 4c1 1.5 2.4 2.4 4.5 2.6v3.1c-1.6 0-3.1-.5-4.5-1.5V14a5 5 0 1 1-5-5c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.2-.9-.2A1.9 1.9 0 1 0 11.4 14V4h3.1z" fill="currentColor"/>
+            </svg>
+          </a>
+          <a class="hero-action" href="#" aria-label="WhatsApp yazın">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <path d="M5.2 18.6A8.4 8.4 0 1 1 8 20.2L4 21.1l1.2-2.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M9 8.8c.2 3 2.1 5.2 5.3 6 .8.2 1.6-.8 1.4-1.5l-1.9-.9-1 .9a6.7 6.7 0 0 1-2.5-2.5l.8-1-1-1.9c-.6-.2-1.3.2-1.1.9z" fill="currentColor"/>
+            </svg>
+            <span>WhatsApp</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <p class="footer-note">Aurora Nails Studio &copy; <span id="year"></span></p>
+    <!-- Photos: Unsplash contributors H&CO, Budka Damdinsuren, Patrícia Hellinger, Rune Enstad,
+         Bryony Elena, Ari Kurniawan, Margarita Yutsaytis, DESIGNECOLOGIST (unsplash.com/license) -->
+  </footer>
+
+  <script src="/script.js" defer></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadUserFromStorage();
+
+      const dateInput = document.getElementById('date');
+
+      const today = new Date();
+      const maxDate = new Date(today);
+      maxDate.setDate(maxDate.getDate() + 7);
+
+      const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
+      dateInput.min = formatDate(today);
+      dateInput.max = formatDate(maxDate);
+
+      if (!dateInput.value) {
+        dateInput.value = formatDate(today);
+        dateInput.dispatchEvent(new Event('change'));
+      } else {
+        generateSlots();
+      }
+    });
+  </script>
+</body>
+</html>
