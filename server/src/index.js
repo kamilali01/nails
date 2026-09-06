@@ -58,10 +58,21 @@ function isLocalhost(origin) {
   }
 }
 
-app.use(
+// Wrapped per-request (rather than configured once) so the origin check can
+// compare against this request's own Host — same-origin calls (the normal
+// case for this app, since one Vercel deployment serves both the frontend
+// and the API) are always allowed without needing to know the domain ahead
+// of time. Browsers attach an Origin header on POST/PUT/DELETE even for
+// same-origin requests, so this check matters — not just for cross-origin.
+app.use((req, res, next) => {
+  const host = req.headers.host;
+
   cors({
     origin(origin, callback) {
       if (!origin) return callback(null, allowNoOrigin);
+      if (host && (origin === `https://${host}` || origin === `http://${host}`)) {
+        return callback(null, true);
+      }
       if (allowedOrigins.includes(origin) || isLocalhost(origin)) {
         return callback(null, true);
       }
@@ -76,8 +87,8 @@ app.use(
       "x-request-owned"
     ],
     credentials: true
-  })
-);
+  })(req, res, next);
+});
 
 app.use(express.json());
 
@@ -195,6 +206,9 @@ app.post('/api/admin/verify', (req, res) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
+  if (err && err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ status: 'error', message: 'Origin not allowed' });
+  }
   console.error('Server error:', err);
   res.status(500).json({ status: 'error', message: 'Internal server error' });
 });
