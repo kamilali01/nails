@@ -13,8 +13,8 @@
       connect-src 'self' https://vercel.live/ https://vercel.com;
       frame-src https://vercel.live/ https://vercel.com;
       ">
-  <meta name="description" content="Aurora Nails Studio – manikür, pedikür və nail art üçün onlayn rezervasiya.">
-  <title>Aurora Nails Studio – Onlayn Rezervasiya</title>
+  <meta name="description" content="Aurora Nails Studio – manikür, pedikür və nail art üçün onlayn rezervasiya." data-i18n-content="meta.desc">
+  <title data-i18n="meta.title">Aurora Nails Studio – Onlayn Rezervasiya</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -35,17 +35,21 @@
       </span>
       <span>Aurora Nails</span>
     </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Menyunu aç" aria-expanded="false">
+    <div class="nav-links" id="navLinks">
+      <a href="#services" class="nav-link" data-i18n="nav.services">Xidmətlər</a>
+      <a href="#gallery" class="nav-link" data-i18n="nav.gallery">Qalereya</a>
+      <a href="#booking" class="nav-link" data-i18n="nav.booking">Rezervasiya</a>
+      <a href="#contact" class="nav-link" data-i18n="nav.contact">Əlaqə</a>
+      <a href="#booking" class="nav-cta-mobile" data-i18n="nav.cta">Rezervasiya et</a>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" class="lang-btn" data-lang="az" aria-pressed="true">AZ</button>
+      <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <a href="#booking" class="nav-cta" data-i18n="nav.cta">Rezervasiya et</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menyunu aç" data-i18n-aria="nav.menuOpen" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-    <div class="nav-links" id="navLinks">
-      <a href="#services" class="nav-link">Xidmətlər</a>
-      <a href="#gallery" class="nav-link">Qalereya</a>
-      <a href="#booking" class="nav-link">Rezervasiya</a>
-      <a href="#contact" class="nav-link">Əlaqə</a>
-      <a href="#booking" class="nav-cta-mobile">Rezervasiya et</a>
-    </div>
-    <a href="#booking" class="nav-cta">Rezervasiya et</a>
   </nav>
 
   <!-- Hero -->
@@ -53,15 +57,15 @@
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-scrim" aria-hidden="true"></div>
     <div class="hero-content">
-      <p class="hero-eyebrow reveal">Premium Manikür &amp; Pedikür Studiyası</p>
-      <h1 class="reveal">Əlləriniz üçün <span class="accent-text">sənət səviyyəsində</span> qayğı</h1>
-      <p class="hero-sub reveal">Rəngarəng dizaynlar, peşəkar qulluq və rahat atmosfer — sevdiyiniz saatı seçin, gerisini bizə buraxın.</p>
+      <p class="hero-eyebrow reveal" data-i18n="hero.eyebrow">Premium Manikür &amp; Pedikür Studiyası</p>
+      <h1 class="reveal" data-i18n-html="hero.title">Əlləriniz üçün <span class="accent-text">sənət səviyyəsində</span> qayğı</h1>
+      <p class="hero-sub reveal" data-i18n="hero.sub">Rəngarəng dizaynlar, peşəkar qulluq və rahat atmosfer — sevdiyiniz saatı seçin, gerisini bizə buraxın.</p>
       <div class="hero-cta-row reveal">
-        <a href="#booking" class="btn btn-primary">Rezervasiya et</a>
-        <a href="#services" class="btn btn-outline">Xidmətlərə bax</a>
+        <a href="#booking" class="btn btn-primary" data-i18n="hero.book">Rezervasiya et</a>
+        <a href="#services" class="btn btn-outline" data-i18n="hero.viewServices">Xidmətlərə bax</a>
       </div>
     </div>
-    <a class="hero-scroll" href="#services" aria-label="Aşağı sürüşdürün">
+    <a class="hero-scroll" href="#services" aria-label="Aşağı sürüşdürün" data-i18n-aria="hero.scroll">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 4v16m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
   </header>
@@ -69,61 +73,61 @@
   <!-- Services -->
   <section class="section" id="services">
     <div class="section-head reveal">
-      <p class="section-eyebrow">Xidmətlər</p>
-      <h2>Sizin üçün seçdiklərimiz</h2>
-      <p class="section-sub">Hər əlin öz hekayəsi var — sizinkini birlikdə yaradaq.</p>
+      <p class="section-eyebrow" data-i18n="services.eyebrow">Xidmətlər</p>
+      <h2 data-i18n="services.title">Sizin üçün seçdiklərimiz</h2>
+      <p class="section-sub" data-i18n="services.sub">Hər əlin öz hekayəsi var — sizinkini birlikdə yaradaq.</p>
     </div>
 
     <div class="service-grid">
       <article class="service-card reveal">
-        <div class="service-media"><img src="/images/service-classic.webp" alt="Klassik manikür" loading="lazy"></div>
+        <div class="service-media"><img src="/images/service-classic.webp" alt="Klassik manikür" data-i18n-alt="svc.classic.title" loading="lazy"></div>
         <div class="service-body">
-          <h3>Klassik manikür</h3>
-          <p>Səliqəli forma və incə qulluq — hər gün üçün zərif görünüş.</p>
+          <h3 data-i18n="svc.classic.title">Klassik manikür</h3>
+          <p data-i18n="svc.classic.desc">Səliqəli forma və incə qulluq — hər gün üçün zərif görünüş.</p>
           <span class="service-price">15 AZN</span>
         </div>
       </article>
 
       <article class="service-card reveal">
-        <div class="service-media"><img src="/images/service-gel.webp" alt="Gel (şellak) manikür" loading="lazy"></div>
+        <div class="service-media"><img src="/images/service-gel.webp" alt="Gel (şellak) manikür" data-i18n-alt="svc.gel.title" loading="lazy"></div>
         <div class="service-body">
-          <h3>Gel (şellak) manikür</h3>
-          <p>Uzun müddət parlaq qalan, zədəyə davamlı örtük.</p>
+          <h3 data-i18n="svc.gel.title">Gel (şellak) manikür</h3>
+          <p data-i18n="svc.gel.desc">Uzun müddət parlaq qalan, zədəyə davamlı örtük.</p>
           <span class="service-price">25 AZN</span>
         </div>
       </article>
 
       <article class="service-card reveal">
-        <div class="service-media"><img src="/images/service-pedicure.webp" alt="Pedikür" loading="lazy"></div>
+        <div class="service-media"><img src="/images/service-pedicure.webp" alt="Pedikür" data-i18n-alt="svc.pedicure.title" loading="lazy"></div>
         <div class="service-body">
-          <h3>Pedikür</h3>
-          <p>Ayaqlarınıza tam rahatlıq və təravət bəxş edən qulluq.</p>
+          <h3 data-i18n="svc.pedicure.title">Pedikür</h3>
+          <p data-i18n="svc.pedicure.desc">Ayaqlarınıza tam rahatlıq və təravət bəxş edən qulluq.</p>
           <span class="service-price">20 AZN</span>
         </div>
       </article>
 
       <article class="service-card reveal">
-        <div class="service-media"><img src="/images/service-extension.webp" alt="Dırnaq uzatma" loading="lazy"></div>
+        <div class="service-media"><img src="/images/service-extension.webp" alt="Dırnaq uzatma" data-i18n-alt="svc.extension.title" loading="lazy"></div>
         <div class="service-body">
-          <h3>Dırnaq uzatma</h3>
-          <p>İstədiyiniz uzunluq və forma — akril və ya gel ilə.</p>
+          <h3 data-i18n="svc.extension.title">Dırnaq uzatma</h3>
+          <p data-i18n="svc.extension.desc">İstədiyiniz uzunluq və forma — akril və ya gel ilə.</p>
           <span class="service-price">35 AZN</span>
         </div>
       </article>
 
       <article class="service-card reveal">
-        <div class="service-media"><img src="/images/service-nailart.webp" alt="Nail art" loading="lazy"></div>
+        <div class="service-media"><img src="/images/service-nailart.webp" alt="Nail art" data-i18n-alt="svc.nailart.title" loading="lazy"></div>
         <div class="service-body">
-          <h3>Nail art (dizayn)</h3>
-          <p>Hər dırnaq bir sənət əsəri — istədiyiniz üslubu seçin.</p>
-          <span class="service-price">2 AZN <small>/ dırnaq</small></span>
+          <h3 data-i18n="svc.nailart.title">Nail art (dizayn)</h3>
+          <p data-i18n="svc.nailart.desc">Hər dırnaq bir sənət əsəri — istədiyiniz üslubu seçin.</p>
+          <span class="service-price">2 AZN <small data-i18n="svc.nailart.unit">/ dırnaq</small></span>
         </div>
       </article>
 
       <article class="service-card service-card-addon reveal">
         <div class="service-body service-body-center">
-          <h3>Əlavə xidmət</h3>
-          <p>Örtüyün silinməsi</p>
+          <h3 data-i18n="svc.addon.title">Əlavə xidmət</h3>
+          <p data-i18n="svc.addon.name">Örtüyün silinməsi</p>
           <span class="service-price">10 AZN</span>
         </div>
       </article>
@@ -135,31 +139,31 @@
     <div class="creative-banner-bg" style="background-image:url('/images/banner-creative.webp')" aria-hidden="true"></div>
     <div class="creative-banner-scrim" aria-hidden="true"></div>
     <div class="creative-banner-content">
-      <p class="section-eyebrow light">Yaradıcılığınıza sərhəd yoxdur</p>
-      <h2>Öz üslubunuzu yaradın</h2>
-      <a href="#gallery" class="btn btn-outline light">Qalereyaya bax</a>
+      <p class="section-eyebrow light" data-i18n="banner.eyebrow">Yaradıcılığınıza sərhəd yoxdur</p>
+      <h2 data-i18n="banner.title">Öz üslubunuzu yaradın</h2>
+      <a href="#gallery" class="btn btn-outline light" data-i18n="banner.cta">Qalereyaya bax</a>
     </div>
   </section>
 
   <!-- Gallery -->
   <section class="section" id="gallery">
     <div class="section-head reveal">
-      <p class="section-eyebrow">Qalereya</p>
-      <h2>İşlərimizdən nümunələr</h2>
-      <p class="section-sub">Ustalarımızın son işlərindən bir neçə görüntü.</p>
+      <p class="section-eyebrow" data-i18n="gallery.eyebrow">Qalereya</p>
+      <h2 data-i18n="gallery.title">İşlərimizdən nümunələr</h2>
+      <p class="section-sub" data-i18n="gallery.sub">Ustalarımızın son işlərindən bir neçə görüntü.</p>
     </div>
     <div class="gallery-grid">
-      <button class="gallery-item reveal" data-full="/images/gallery-1.webp" aria-label="Böyüt">
-        <img src="/images/gallery-1.webp" alt="Bənövşəyi ombre dizayn" loading="lazy">
+      <button class="gallery-item reveal" data-full="/images/gallery-1.webp" aria-label="Böyüt" data-i18n-aria="gallery.enlarge">
+        <img src="/images/gallery-1.webp" alt="Bənövşəyi ombre dizayn" data-i18n-alt="gallery.alt1" loading="lazy">
       </button>
-      <button class="gallery-item reveal" data-full="/images/gallery-2.webp" aria-label="Böyüt">
-        <img src="/images/gallery-2.webp" alt="Qara və tısbağa naxışlı dizayn" loading="lazy">
+      <button class="gallery-item reveal" data-full="/images/gallery-2.webp" aria-label="Böyüt" data-i18n-aria="gallery.enlarge">
+        <img src="/images/gallery-2.webp" alt="Qara və tısbağa naxışlı dizayn" data-i18n-alt="gallery.alt2" loading="lazy">
       </button>
-      <button class="gallery-item reveal" data-full="/images/gallery-3.webp" aria-label="Böyüt">
-        <img src="/images/gallery-3.webp" alt="Ağ rəngli ürək dizaynı" loading="lazy">
+      <button class="gallery-item reveal" data-full="/images/gallery-3.webp" aria-label="Böyüt" data-i18n-aria="gallery.enlarge">
+        <img src="/images/gallery-3.webp" alt="Ağ rəngli ürək dizaynı" data-i18n-alt="gallery.alt3" loading="lazy">
       </button>
-      <button class="gallery-item reveal" data-full="/images/gallery-4.webp" aria-label="Böyüt">
-        <img src="/images/gallery-4.webp" alt="Qırmızı yazılı dizayn" loading="lazy">
+      <button class="gallery-item reveal" data-full="/images/gallery-4.webp" aria-label="Böyüt" data-i18n-aria="gallery.enlarge">
+        <img src="/images/gallery-4.webp" alt="Qırmızı yazılı dizayn" data-i18n-alt="gallery.alt4" loading="lazy">
       </button>
     </div>
   </section>
@@ -167,19 +171,19 @@
   <!-- Booking -->
   <section class="section section-booking" id="booking">
     <div class="section-head reveal">
-      <p class="section-eyebrow">Rezervasiya</p>
-      <h2>Sizə uyğun saatı seçin</h2>
-      <p class="section-sub">Gün seçin, boş saatlardan birinə klikləyin və məlumatlarınızı daxil edin.</p>
+      <p class="section-eyebrow" data-i18n="booking.eyebrow">Rezervasiya</p>
+      <h2 data-i18n="booking.title">Sizə uyğun saatı seçin</h2>
+      <p class="section-sub" data-i18n="booking.sub">Gün seçin, boş saatlardan birinə klikləyin və məlumatlarınızı daxil edin.</p>
     </div>
 
     <div class="container booking-card reveal">
-      <label for="date">Gün seçin:</label>
+      <label for="date" data-i18n="booking.dateLabel">Gün seçin:</label>
       <input type="date" id="date">
 
       <div class="slots-legend">
-        <span><i class="dot dot-free"></i> Boş</span>
-        <span><i class="dot dot-mine"></i> Sizin rezervasiyanız</span>
-        <span><i class="dot dot-booked"></i> Rezerv olunub</span>
+        <span><i class="dot dot-free"></i> <span data-i18n="legend.free">Boş</span></span>
+        <span><i class="dot dot-mine"></i> <span data-i18n="legend.mine">Sizin rezervasiyanız</span></span>
+        <span><i class="dot dot-booked"></i> <span data-i18n="legend.booked">Rezerv olunub</span></span>
       </div>
 
       <div id="slots" class="slots-grid">
@@ -193,12 +197,12 @@
   <!-- Name Modal -->
   <div id="nameModal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2 id="modalTitle">Adınızı və nömrənizi daxil edin</h2>
-      <input type="text" id="modalNameInput" placeholder="Adınız..." autocomplete="off">
-      <input type="tel" id="modalPhoneInput" placeholder="Telefon nömrəniz..." autocomplete="off" style="margin-top:8px">
+      <h2 id="modalTitle" data-i18n="modal.title.new">Adınızı və nömrənizi daxil edin</h2>
+      <input type="text" id="modalNameInput" placeholder="Adınız..." data-i18n-placeholder="modal.name.ph" autocomplete="off">
+      <input type="tel" id="modalPhoneInput" placeholder="Telefon nömrəniz..." data-i18n-placeholder="modal.phone.ph" autocomplete="off" style="margin-top:8px">
       <div class="modal-actions">
-        <button id="modalConfirm" class="primary">Təsdiqlə</button>
-        <button id="modalCancel" class="ghost">Ləğv et</button>
+        <button id="modalConfirm" class="primary" data-i18n="modal.confirm">Təsdiqlə</button>
+        <button id="modalCancel" class="ghost" data-i18n="modal.cancel">Ləğv et</button>
       </div>
     </div>
   </div>
@@ -206,36 +210,36 @@
   <!-- Manage (edit/cancel) Modal for the visitor's own booking -->
   <div id="manageModal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2>Saat <span id="manageHour"></span></h2>
-      <p class="modal-subtitle">Bu rezervasiya sizə aiddir. Nə etmək istəyirsiniz?</p>
+      <h2><span data-i18n="manage.hour">Saat</span> <span id="manageHour"></span></h2>
+      <p class="modal-subtitle" data-i18n="manage.sub">Bu rezervasiya sizə aiddir. Nə etmək istəyirsiniz?</p>
       <div class="modal-actions">
-        <button id="manageEditBtn" class="primary">Redaktə et</button>
-        <button id="manageCancelBtn" class="ghost">Ləğv et</button>
+        <button id="manageEditBtn" class="primary" data-i18n="manage.edit">Redaktə et</button>
+        <button id="manageCancelBtn" class="ghost" data-i18n="manage.cancel">Rezervasiyanı ləğv et</button>
       </div>
-      <button id="manageClose" class="btn-text-close">Bağla</button>
+      <button id="manageClose" class="btn-text-close" data-i18n="manage.close">Bağla</button>
     </div>
   </div>
 
   <!-- Confirmation Modal -->
   <div id="confirmModal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2 id="confirmTitle">Təsdiq</h2>
+      <h2 id="confirmTitle" data-i18n="confirm.title">Təsdiq</h2>
       <p id="confirmMessage"></p>
       <div class="modal-actions">
-        <button id="confirmCancel" class="ghost">Geri</button>
-        <button id="confirmOk" class="primary">Təsdiq</button>
+        <button id="confirmCancel" class="ghost" data-i18n="confirm.back">Geri</button>
+        <button id="confirmOk" class="primary" data-i18n="confirm.ok">Təsdiq</button>
       </div>
     </div>
   </div>
 
   <!-- Back to top -->
-  <button id="backToTop" class="back-to-top" aria-label="Yuxarı qayıt">
+  <button id="backToTop" class="back-to-top" aria-label="Yuxarı qayıt" data-i18n-aria="common.backToTop">
     <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5m0 0l-6 6m6-6l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
 
   <!-- Lightbox Modal -->
   <div id="lightboxModal" class="modal lightbox-modal" style="display:none;">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Bağla">&times;</button>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Bağla" data-i18n-aria="common.close">&times;</button>
     <img id="lightboxImg" src="" alt="">
   </div>
 
@@ -253,23 +257,23 @@
           </span>
           <span>Aurora Nails</span>
         </a>
-        <p>Premium manikür, pedikür və nail art studiyası.</p>
+        <p data-i18n="footer.tagline">Premium manikür, pedikür və nail art studiyası.</p>
       </div>
 
       <div class="footer-col">
-        <h4>Əlaqə</h4>
+        <h4 data-i18n="footer.contact">Əlaqə</h4>
         <!-- TODO: real ünvan/nömrə əlavə edin -->
-        <p>Ünvan əlavə edilməyib</p>
-        <p>Telefon əlavə edilməyib</p>
+        <p data-i18n="footer.noAddress">Ünvan əlavə edilməyib</p>
+        <p data-i18n="footer.noPhone">Telefon əlavə edilməyib</p>
       </div>
 
       <div class="footer-col">
-        <h4>İş saatları</h4>
-        <p>Hər gün: 10:00 – 22:00</p>
+        <h4 data-i18n="footer.hoursTitle">İş saatları</h4>
+        <p data-i18n="footer.hours">Hər gün: 10:00 – 22:00</p>
       </div>
 
       <div class="footer-col">
-        <h4>Sosial media</h4>
+        <h4 data-i18n="footer.social">Sosial media</h4>
         <div class="hero-actions">
           <!-- TODO: real hesabları əlavə edin -->
           <a class="hero-action icon-only" href="#" aria-label="Instagram">
@@ -284,7 +288,7 @@
               <path d="M14.5 4c1 1.5 2.4 2.4 4.5 2.6v3.1c-1.6 0-3.1-.5-4.5-1.5V14a5 5 0 1 1-5-5c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.2-.9-.2A1.9 1.9 0 1 0 11.4 14V4h3.1z" fill="currentColor"/>
             </svg>
           </a>
-          <a class="hero-action" href="#" aria-label="WhatsApp yazın">
+          <a class="hero-action" href="#" aria-label="WhatsApp yazın" data-i18n-aria="footer.whatsappAria">
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
               <path d="M5.2 18.6A8.4 8.4 0 1 1 8 20.2L4 21.1l1.2-2.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
               <path d="M9 8.8c.2 3 2.1 5.2 5.3 6 .8.2 1.6-.8 1.4-1.5l-1.9-.9-1 .9a6.7 6.7 0 0 1-2.5-2.5l.8-1-1-1.9c-.6-.2-1.3.2-1.1.9z" fill="currentColor"/>
@@ -299,6 +303,8 @@
          Bryony Elena, Ari Kurniawan, Margarita Yutsaytis, DESIGNECOLOGIST (unsplash.com/license) -->
   </footer>
 
+  <!-- i18n runs synchronously (DOM above is parsed) so text is translated before first paint -->
+  <script src="/i18n.js"></script>
   <script src="/script.js" defer></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();

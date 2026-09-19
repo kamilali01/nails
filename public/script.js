@@ -78,7 +78,8 @@ function showUpdateNotification() {
   const msg = document.getElementById('message');
   if (!msg) return;
 
-  msg.innerHTML = 'Yeni dəyişikliklər var. <a href="#" style="color:#e8b4bc;text-decoration:underline;">Yenilə</a>';
+  msg.dataset.kind = 'update';
+  msg.innerHTML = `${t('update.text')} <a href="#" style="color:#e8b4bc;text-decoration:underline;">${t('update.refresh')}</a>`;
   msg.style.display = 'block';
   msg.style.cursor = 'pointer';
 
@@ -86,11 +87,20 @@ function showUpdateNotification() {
   if (refreshLink) {
     refreshLink.onclick = (e) => {
       e.preventDefault();
-      hasUnseenChanges = false;
-      msg.textContent = '';
-      msg.style.display = 'none';
+      clearUpdateNotice();
       generateSlots();
     };
+  }
+}
+
+// Hide the "new changes" banner if it's showing
+function clearUpdateNotice() {
+  hasUnseenChanges = false;
+  const msg = document.getElementById('message');
+  if (msg && msg.dataset.kind === 'update') {
+    msg.innerHTML = '';
+    msg.style.display = 'none';
+    delete msg.dataset.kind;
   }
 }
 
@@ -250,7 +260,7 @@ function getAllTokens() {
     const stored = CookieUtils.get('an_tokens');
     if (!stored) return [];
     const tokens = JSON.parse(stored);
-    return Object.values(tokens).filter(t => t && t.length > 0);
+    return Object.values(tokens).filter(tok => tok && tok.length > 0);
   } catch (err) {
     console.error('Error reading tokens from cookies:', err);
     return [];
@@ -260,7 +270,7 @@ function getAllTokens() {
 // Fetch bookings
 async function fetchBookings(additionalToken = null) {
   try {
-    const headers = {};
+    const headers = { 'x-lang': getLang() };
 
     const date = currentDisplayedDate || document.getElementById('date').value;
     if (!date) return {};
@@ -268,11 +278,11 @@ async function fetchBookings(additionalToken = null) {
     let tokens = getAllTokens();
 
     if (additionalToken) {
-      tokens = tokens.filter(t => t !== additionalToken && t && t.length > 0);
+      tokens = tokens.filter(tok => tok !== additionalToken && tok && tok.length > 0);
       tokens.push(additionalToken);
     }
 
-    tokens = [...new Set(tokens)].filter(t => t && t.length > 0);
+    tokens = [...new Set(tokens)].filter(tok => tok && tok.length > 0);
 
     if (tokens.length > 0) {
       headers['x-user-tokens'] = tokens.join(',');
@@ -292,7 +302,7 @@ async function fetchBookings(additionalToken = null) {
 // Save booking
 async function saveBooking(date, hour, name, phone) {
   try {
-    const headers = { 'Content-Type': 'application/json' };
+    const headers = { 'Content-Type': 'application/json', 'x-lang': getLang() };
     const existingToken = getToken(date, hour);
     if (existingToken) {
       headers['x-user-token'] = existingToken;
@@ -322,14 +332,14 @@ async function saveBooking(date, hour, name, phone) {
     return result;
   } catch (err) {
     console.error('Network error:', err);
-    return { status: 'error', message: 'Şəbəkə xətası. İnternet bağlantınızı yoxlayın.' };
+    return { status: 'error', message: t('err.network') };
   }
 }
 
 // Update booking
 async function updateBooking(date, hour, payload) {
   try {
-    const headers = { 'Content-Type': 'application/json' };
+    const headers = { 'Content-Type': 'application/json', 'x-lang': getLang() };
     const token = getToken(date, hour);
     if (token) {
       headers['x-user-token'] = token;
@@ -347,12 +357,12 @@ async function updateBooking(date, hour, payload) {
 }
 
 async function cancelReservation(date, hour) {
-  const isConfirmed = await showConfirm(`${hour} üçün rezervasiyanı ləğv etmək istəyirsiniz?`);
+  const isConfirmed = await showConfirm(t('confirm.cancelBooking', { hour }));
   if (!isConfirmed) return;
 
   try {
     const params = new URLSearchParams({ date, hour });
-    const headers = { 'x-user-token': getToken(date, hour) };
+    const headers = { 'x-user-token': getToken(date, hour), 'x-lang': getLang() };
 
     const result = await fetch(`${API_URL}?${params.toString()}`, {
       method: 'DELETE',
@@ -362,14 +372,14 @@ async function cancelReservation(date, hour) {
     if (result.ok) {
       deleteToken(date, hour);
       await generateSlots();
-      showToast(`${hour} üçün rezervasiya ləğv edildi!`);
+      showToast(t('toast.cancelled', { hour }));
     } else {
       const error = await result.json().catch(() => ({}));
-      showToast(error.message || 'Xəta baş verdi', 'error');
+      showToast(error.message || t('toast.error'), 'error');
     }
   } catch (error) {
     console.error('Delete error:', error);
-    showToast('Xəta baş verdi', 'error');
+    showToast(t('toast.error'), 'error');
   }
 }
 
@@ -402,6 +412,16 @@ window.addEventListener('DOMContentLoaded', () => {
   initLightbox();
   initManageModal();
   initBackToTop();
+
+  // Re-render the dynamic bits (slot labels, open modal title) when the
+  // visitor switches language.
+  document.addEventListener('langchange', () => {
+    generateSlots();
+    const nameModal = document.getElementById('nameModal');
+    if (nameModal && nameModal.classList.contains('show')) {
+      document.getElementById('modalTitle').textContent = t(isEditing ? 'modal.title.edit' : 'modal.title.new');
+    }
+  });
 });
 
 window.addEventListener('beforeunload', () => {
@@ -412,7 +432,7 @@ function openNameModal(hour, date) {
   selectedHour = hour;
   selectedDate = date;
   const title = document.getElementById('modalTitle');
-  title.textContent = isEditing ? 'Rezervasiyanı redaktə edin' : 'Adınızı və nömrənizi daxil edin';
+  title.textContent = t(isEditing ? 'modal.title.edit' : 'modal.title.new');
   document.getElementById('modalNameInput').value = lastBookedName;
   const phoneInput = document.getElementById('modalPhoneInput');
   if (phoneInput) phoneInput.value = lastBookedPhone;
@@ -442,15 +462,15 @@ document.getElementById('modalConfirm').onclick = async function() {
   const phone = phoneEl ? phoneEl.value.trim() : '';
 
   if (!name) {
-    alert('Adınızı daxil edin!');
+    alert(t('alert.enterName'));
     return;
   }
   if (!phone) {
-    alert('Telefon nömrənizi daxil edin!');
+    alert(t('alert.enterPhone'));
     return;
   }
   if (!validatePhone(phone)) {
-    alert('Düzgün telefon nömrəsi daxil edin (məs: +994501234567 və ya 0501234567)');
+    alert(t('alert.badPhone'));
     return;
   }
 
@@ -466,29 +486,24 @@ document.getElementById('modalConfirm').onclick = async function() {
       const reservationToken = result.token;
 
       if (!reservationToken) {
-        alert('Xəta: Token alınmadı');
+        alert(t('alert.noToken'));
         return;
       }
 
       saveToken(selectedDate, selectedHour, reservationToken);
       closeNameModal();
-
-      hasUnseenChanges = false;
-      const msg = document.getElementById('message');
-      if (msg && msg.innerHTML.includes('Yeni dəyişikliklər')) {
-        msg.innerHTML = '';
-        msg.style.display = 'none';
-      }
+      clearUpdateNotice();
 
       await generateSlots(reservationToken);
-      showToast(`${bookedHour} üçün qeydiyyat tamamlandı!`);
+      showToast(t('toast.booked', { hour: bookedHour }));
     } else {
-      const errorMessage = result.message || 'Xəta baş verdi';
+      const errorMessage = result.message || t('alert.error');
       alert(errorMessage);
       closeNameModal();
       generateSlots();
     }
   } else {
+    const updatedHour = selectedHour;
     const payload = { newName: name, newPhone: phone };
     const result = await updateBooking(selectedDate, selectedHour, payload);
     if (result.status === 'success') {
@@ -497,8 +512,8 @@ document.getElementById('modalConfirm').onclick = async function() {
       saveUserToStorage(name, phone);
       closeNameModal();
       await generateSlots();
-      showToast(`${selectedHour} üçün məlumatlar yeniləndi!`);
-    } else alert('Dəyişmək mümkün olmadı: ' + (result.message || 'Xəta'));
+      showToast(t('toast.updated', { hour: updatedHour }));
+    } else alert(`${t('alert.updateFailed')} ${result.message || t('alert.error')}`);
   }
 };
 
@@ -690,7 +705,7 @@ async function generateSlots(additionalToken = null) {
     chip.type = 'button';
     chip.className = 'slot-chip ' + (isMine ? 'is-mine' : isBooked ? 'is-booked' : 'is-free');
 
-    const stateLabel = isMine ? 'Sizin' : isBooked ? 'Rezerv' : 'Boş';
+    const stateLabel = t(isMine ? 'slot.mine' : isBooked ? 'slot.booked' : 'slot.free');
     chip.innerHTML = `<span class="slot-hour">${hour}</span><span class="slot-state">${stateLabel}</span>`;
 
     if (!isBooked) {
@@ -698,7 +713,7 @@ async function generateSlots(additionalToken = null) {
     } else if (isMine) {
       chip.addEventListener('click', () => openManageModal(hour, date));
     } else {
-      chip.addEventListener('click', () => showToast('Bu saat artıq rezerv olunub', 'info'));
+      chip.addEventListener('click', () => showToast(t('toast.slotTaken'), 'info'));
     }
 
     slotContainer.appendChild(chip);
@@ -706,13 +721,7 @@ async function generateSlots(additionalToken = null) {
 
   const currentData = { bookings: { [date]: dayBookings } };
   lastDataHash = hashData(currentData);
-  hasUnseenChanges = false;
-
-  const msg = document.getElementById('message');
-  if (msg && msg.innerHTML.includes('Yeni dəyişikliklər')) {
-    msg.innerHTML = '';
-    msg.style.display = 'none';
-  }
+  clearUpdateNotice();
 
   generating = false;
 }

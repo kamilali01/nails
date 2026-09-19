@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { msg } from './messages.js';
 
 // Load env from server/.env then server/src/.env (supports either location)
 const __filename = fileURLToPath(import.meta.url);
@@ -84,7 +85,8 @@ app.use((req, res, next) => {
       "x-user-token",
       "x-admin-token",
       "x-user-tokens",
-      "x-request-owned"
+      "x-request-owned",
+      "x-lang"
     ],
     credentials: true
   })(req, res, next);
@@ -124,8 +126,7 @@ function apiRateLimiter(req, res, next) {
       res.set('Retry-After', String(retryAfter));
       return res.status(429).json({
         status: 'error',
-        message:
-          'Çox tez-tez sorğu göndərirsiniz. Zəhmət olmasa bir az sonra yenidən cəhd edin.'
+        message: msg(req, 'rateLimit.api')
       });
     }
 

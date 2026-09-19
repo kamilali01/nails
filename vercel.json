@@ -9,6 +9,7 @@
     { "src": "/health", "dest": "server/src/index.js" },
     { "src": "/style.css", "dest": "/public/style.css" },
     { "src": "/script.js", "dest": "/public/script.js" },
+    { "src": "/i18n.js", "dest": "/public/i18n.js" },
     { "src": "/images/(.*)", "dest": "/public/images/$1" },
     { "src": "/dashboard", "dest": "/public/dashboard.html" },
     { "src": "/", "dest": "/public/index.html" },

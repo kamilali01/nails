@@ -236,6 +236,56 @@ h1, h2, h3 {
   display: none;
 }
 
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.lang-btn {
+  min-width: 38px;
+  height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.lang-btn:hover {
+  color: var(--ink);
+}
+
+.lang-btn.active {
+  color: #2a1310;
+  background: linear-gradient(180deg, var(--gold-2), var(--gold));
+}
+
+.dashboard-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-lang {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.login-lang .lang-switch,
+.dashboard-topbar-actions .lang-switch {
+  margin-left: 0;
+}
+
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -1521,6 +1571,10 @@ input:focus-visible {
 
   .nav-cta {
     display: none;
+  }
+
+  .lang-switch {
+    margin-left: auto;
   }
 
   .nav-toggle {

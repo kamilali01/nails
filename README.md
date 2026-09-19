@@ -118,6 +118,16 @@ a separate page from the public booking site. It asks for the `ADMIN_TOKEN` from
 mark a day off, and clean up old records. The login only lasts for the browser
 tab (`sessionStorage`) — closing the tab logs staff out.
 
+### 8) Languages (Azerbaijani / English)
+
+The public site and `/dashboard` have an `AZ | EN` switcher (Azerbaijani is the
+default; the choice is remembered in the browser). Page text lives in
+`public/i18n.js` and is applied through `data-i18n*` attributes; API error
+messages are localized server-side in `server/src/messages.js` based on the
+`x-lang` request header. To add a string, add the same key to both languages in
+those files. The day-off marker stored in the database stays `Bugün işləmirik`
+(the client translates it for display), so don't rename it.
+
 ### Troubleshooting
 
 **CORS errors:**

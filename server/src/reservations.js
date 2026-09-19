@@ -1,6 +1,7 @@
 import { Router } from 'express';   //reservations.js
 import { getDbPool, initSchema } from './db.js';
 import { randomBytes } from 'crypto';
+import { msg } from './messages.js';
 
 const router = Router();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -100,8 +101,7 @@ function postReservationsRateLimiter(req, res, next) {
       res.set('Retry-After', String(retryAfter));
       return res.status(429).json({
         status: 'error',
-        message:
-          'Çox tez-tez rezervasiya sorğusu göndərirsiniz. Zəhmət olmasa bir neçə dəqiqə sonra yenidən cəhd edin.'
+        message: msg(req, 'rateLimit.booking')
       });
     }
 
@@ -179,7 +179,7 @@ router.get('/reservations', async (req, res, next) => {
     console.error('Error message:', e.message);
     return res.status(500).json({ 
       status: 'error', 
-      message: 'Məlumatları yükləmək mümkün olmadı. Zəhmət olmasa yenidən cəhd edin.',
+      message: msg(req, 'load.failed'),
       error: process.env.NODE_ENV === 'development' ? e.message : undefined
     });
   }
@@ -196,7 +196,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
     if (!date || !hour || !name || !phone) {
       return res.status(400).json({ 
         status: 'error', 
-        message: 'Bütün məlumatları doldurun (tarix, saat, ad, telefon)' 
+        message: msg(req, 'book.missingFields') 
       });
     }
     
@@ -204,7 +204,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       return res.status(400).json({ 
         status: 'error', 
-        message: 'Yanlış tarix formatı' 
+        message: msg(req, 'book.badDate') 
       });
     }
     
@@ -212,7 +212,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
     if (!/^\d{2}:\d{2}$/.test(hour)) {
       return res.status(400).json({ 
         status: 'error', 
-        message: 'Yanlış saat formatı' 
+        message: msg(req, 'book.badHour') 
       });
     }
     
@@ -221,7 +221,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
     if (!/^(\+994|0)[0-9]{9}$/.test(cleanPhone)) {
       return res.status(400).json({ 
         status: 'error', 
-        message: 'Düzgün telefon nömrəsi daxil edin (məs: +994501234567 və ya 0501234567)' 
+        message: msg(req, 'book.badPhone') 
       });
     }
     
@@ -235,14 +235,14 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
     if (bookingDate < today) {
       return res.status(400).json({ 
         status: 'error', 
-        message: 'Keçmiş tarixə rezervasiya etmək mümkün deyil' 
+        message: msg(req, 'book.past') 
       });
     }
     
     if (bookingDate > maxDate) {
       return res.status(400).json({ 
         status: 'error', 
-        message: '30 gündən çox qabaqcadan rezervasiya etmək mümkün deyil' 
+        message: msg(req, 'book.tooFar') 
       });
     }
     
@@ -272,7 +272,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
         console.error('Admin reservation error:', dbError);
         return res.status(500).json({ 
           status: 'error', 
-          message: 'Rezervasiya yaradılmadı. Zəhmət olmasa yenidən cəhd edin.' 
+          message: msg(req, 'book.createFailed') 
         });
       }
     } else if (userToken) {
@@ -300,14 +300,14 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
           devLog('❌ User token does not match existing reservation');
           return res.status(403).json({ 
             status: 'error', 
-            message: 'Bu saat artıq başqası tərəfindən rezerv olunub' 
+            message: msg(req, 'book.takenByOther') 
           });
         }
       } catch (dbError) {
         console.error('User update reservation error:', dbError);
         return res.status(500).json({ 
           status: 'error', 
-          message: 'Rezervasiya yenilənmədi. Zəhmət olmasa yenidən cəhd edin.' 
+          message: msg(req, 'book.updateFailed') 
         });
       }
     } else {
@@ -326,7 +326,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
           devLog('❌ Slot is already occupied');
           return res.status(409).json({ 
             status: 'error', 
-            message: 'Bu saat artıq rezerv olunub. Zəhmət olmasa başqa saat seçin.' 
+            message: msg(req, 'book.slotTaken') 
           });
         }
         
@@ -355,7 +355,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
             devLog('❌ User already has booking today at:', bookedHour);
             return res.status(409).json({ 
               status: 'error', 
-              message: `Siz bu gün artıq ${bookedHour} üçün rezervasiya etmisiniz. Hər gün yalnız 1 rezervasiya etmək mümkündür.`,
+              message: msg(req, 'book.oneAtATime', { hour: bookedHour }),
               existingHour: bookedHour
             });
           }
@@ -377,7 +377,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
           devLog('⚠️ Race condition detected - slot taken:', date, hour);
           return res.status(409).json({ 
             status: 'error', 
-            message: 'Bu saat artıq rezerv olunub. Zəhmət olmasa başqa saat seçin.' 
+            message: msg(req, 'book.slotTaken') 
           });
         }
         
@@ -385,7 +385,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
         
         return res.status(500).json({ 
           status: 'error', 
-          message: 'Rezervasiya yaradılmadı. Zəhmət olmasa yenidən cəhd edin.' 
+          message: msg(req, 'book.createFailed') 
         });
       }
     }
@@ -393,7 +393,7 @@ router.post('/reservations', postReservationsRateLimiter, async (req, res, next)
     console.error('❌ POST /reservations unexpected error:', e);
     return res.status(500).json({ 
       status: 'error', 
-      message: 'Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.' 
+      message: msg(req, 'generic.error') 
     });
   }
 });
@@ -405,7 +405,7 @@ router.delete('/reservations', async (req, res, next) => {
     if (!date || !hour) {
       return res.status(400).json({ 
         status: 'error', 
-        message: 'Tarix və saat tələb olunur' 
+        message: msg(req, 'delete.missingParams') 
       });
     }
     
@@ -422,7 +422,7 @@ router.delete('/reservations', async (req, res, next) => {
         console.error('Admin delete error:', dbError);
         return res.status(500).json({ 
           status: 'error', 
-          message: 'Rezervasiya silinmədi. Zəhmət olmasa yenidən cəhd edin.' 
+          message: msg(req, 'delete.failed') 
         });
       }
     }
@@ -431,7 +431,7 @@ router.delete('/reservations', async (req, res, next) => {
     if (!userToken) {
       return res.status(401).json({ 
         status: 'error', 
-        message: 'İcazə yoxdur' 
+        message: msg(req, 'auth.unauthorized') 
       });
     }
     
@@ -444,7 +444,7 @@ router.delete('/reservations', async (req, res, next) => {
       if (del.rowCount === 0) {
         return res.status(403).json({ 
           status: 'error', 
-          message: 'Bu rezervasiyanı silmək üçün icazəniz yoxdur' 
+          message: msg(req, 'delete.notYours') 
         });
       }
       
@@ -454,14 +454,14 @@ router.delete('/reservations', async (req, res, next) => {
       console.error('User delete error:', dbError);
       return res.status(500).json({ 
         status: 'error', 
-        message: 'Rezervasiya silinmədi. Zəhmət olmasa yenidən cəhd edin.' 
+        message: msg(req, 'delete.failed') 
       });
     }
   } catch (e) {
     console.error('DELETE /reservations unexpected error:', e);
     return res.status(500).json({ 
       status: 'error', 
-      message: 'Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.' 
+      message: msg(req, 'generic.error') 
     });
   }
 });
@@ -473,7 +473,7 @@ router.put('/reservations', async (req, res, next) => {
     if (!date || !hour || !newName || !newPhone) {
       return res.status(400).json({ 
         status: 'error', 
-        message: 'Bütün məlumatları doldurun' 
+        message: msg(req, 'update.missingFields')
       });
     }
     
@@ -482,7 +482,7 @@ router.put('/reservations', async (req, res, next) => {
     if (!/^(\+994|0)[0-9]{9}$/.test(cleanPhone)) {
       return res.status(400).json({ 
         status: 'error', 
-        message: 'Düzgün telefon nömrəsi daxil edin' 
+        message: msg(req, 'update.badPhone')
       });
     }
     
@@ -500,7 +500,7 @@ router.put('/reservations', async (req, res, next) => {
         if (r.rowCount === 0) {
           return res.status(404).json({ 
             status: 'error', 
-            message: 'Rezervasiya tapılmadı' 
+            message: msg(req, 'update.notFound') 
           });
         }
         
@@ -509,7 +509,7 @@ router.put('/reservations', async (req, res, next) => {
         console.error('Admin update error:', dbError);
         return res.status(500).json({ 
           status: 'error', 
-          message: 'Rezervasiya yenilənmədi. Zəhmət olmasa yenidən cəhd edin.' 
+          message: msg(req, 'book.updateFailed') 
         });
       }
     }
@@ -518,7 +518,7 @@ router.put('/reservations', async (req, res, next) => {
     if (!userToken) {
       return res.status(401).json({ 
         status: 'error', 
-        message: 'İcazə yoxdur' 
+        message: msg(req, 'auth.unauthorized') 
       });
     }
     
@@ -531,7 +531,7 @@ router.put('/reservations', async (req, res, next) => {
       if (r.rowCount === 0) {
         return res.status(403).json({ 
           status: 'error', 
-          message: 'Bu rezervasiyanı dəyişmək üçün icazəniz yoxdur' 
+          message: msg(req, 'update.notYours') 
         });
       }
       
@@ -540,14 +540,14 @@ router.put('/reservations', async (req, res, next) => {
       console.error('User update error:', dbError);
       return res.status(500).json({ 
         status: 'error', 
-        message: 'Rezervasiya yenilənmədi. Zəhmət olmasa yenidən cəhd edin.' 
+        message: msg(req, 'book.updateFailed') 
       });
     }
   } catch (e) {
     console.error('PUT /reservations unexpected error:', e);
     return res.status(500).json({ 
       status: 'error', 
-      message: 'Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.' 
+      message: msg(req, 'generic.error') 
     });
   }
 });
@@ -584,7 +584,7 @@ router.post('/reservations/day-off', async (req, res) => {
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return res.status(400).json({
       status: 'error',
-      message: 'Düzgün tarix göndərilməyib'
+      message: msg(req, 'dayOff.badDate')
     });
   }
 
@@ -601,7 +601,7 @@ router.post('/reservations/day-off', async (req, res) => {
     if (existing.rows[0].cnt > 0) {
       return res.status(409).json({
         status: 'error',
-        message: 'Bu gün üçün artıq rezervasiyalar var. Yalnız tam boş günləri bağlamaq mümkündür.'
+        message: msg(req, 'dayOff.hasBookings')
       });
     }
 
@@ -628,7 +628,7 @@ router.post('/reservations/day-off', async (req, res) => {
     console.error('Day-off creation error:', err);
     return res.status(500).json({
       status: 'error',
-      message: 'Günü bağlamaq mümkün olmadı. Zəhmət olmasa yenidən cəhd edin.'
+      message: msg(req, 'dayOff.failed')
     });
   }
 });
